@@ -21,7 +21,7 @@
           style="width:100%;height: 100vh;"
           @center_changed="updateCenter"
           @zoom_changed="updateZoom"
-          @click="infoWinOpen = !infoWinOpen"
+          @drag="infoWinOpen = false"
           >
 
           <gmap-info-window 
@@ -51,7 +51,7 @@
             >
             <div class="card mb-3">
               <a href="#">
-                <img class="card-img-top img-fit" src="http://192.168.18.37:3000/static/images/sale.jpg" alt="Card image cap">
+                <img class="card-img-top img-fit" src="../assets/sale.jpg" alt="Card image cap">
               </a>                                       
               <div class="img-block">                    
                 <div class="rate-info">                  
@@ -196,7 +196,7 @@ export default {
     },
 
     markerInfoWindow (marker,idx){
-      var content = "<img src='http://192.168.18.37:3000/static/images/sale.jpg' class='' width='200'>" + "<div class='info'>" + "<div class='title'>" + marker.name + "</div>" +"<div class='price'>"+ marker.infoText + "</div>" + "</div>"
+      var content = "<img src='https://firebasestorage.googleapis.com/v0/b/zooka-tampilan.appspot.com/o/sale.jpg?alt=media&token=8f453e22-bbe4-44e3-8f7f-fcfab9b87810' class='' width='200'>" + "<div class='info'>" + "<div class='title'>" + marker.name + "</div>" +"<div class='price'>"+ marker.infoText + "</div>" + "</div>"
       this.infoWindowPos = marker.position;
       this.infoOptions.content = content;
 

@@ -22,7 +22,7 @@
            scaleControl: false,
            streetViewControl: true,
            rotateControl: false,
-           fullscreenControl: false,
+           fullscreenControl: true,
            disableDefaultUi: false,
            zoomControlOptions: {position: 1},
            streetViewControlOptions: {position: 5}
@@ -34,14 +34,12 @@
           @center_changed="updateCenter"
           @zoom_changed="updateZoom"
           @drag="infoWinOpen = false"
-          @idle="updateData"
-          >
+          @idle="updateData">
 
           <gmap-info-window 
             :options="infoOptions" 
             :position="infoWindowPos" 
-            :opened="infoWinOpen" 
-          >
+            :opened="infoWinOpen">
           </gmap-info-window>
 
           <gmap-marker
@@ -49,8 +47,7 @@
             :key="index"
             :position="m.position"
             :icon="markerOptions"
-            @click="markerInfoWindow(m,index)"
-          >
+            @click="markerInfoWindow(m,index)">
           </gmap-marker>
         </gmap-map>
       </div>
@@ -82,13 +79,13 @@ const mapMarker = require('../assets/marker.png');
 export default {
   data() {
     return {
+      center: { lat: -8.340539, lng: 115.091949 },
       searchLoading: false,
       afterLoading: false,
-      center: { lat: -8.340539, lng: 115.091949 },
       circle_markers: [],
       current_position: {lat: null,lng: null},
       current_zoom: null,
-      radius:0,
+      radius: null,
       markers: [
         {position:{lat: -8.340539,lng: 115.091948},infoText:'$200',name:'item1'},
         {position:{lat: -8.267559,lng: 114.524339},infoText:'$1800',name:'item2'},
@@ -210,12 +207,12 @@ export default {
 
 .gm-ui-hover-effect { display: none !important; }
 .gm-style-iw-d {overflow:hidden !important;}
+.gm-style .gm-style-iw-t::after{top:38px;}
+.gm-control-active.gm-fullscreen-control{border-radius: 8px !important;}
+
 .gm-style .gm-style-iw-c{
   padding: 0px;
   top:40px;
-}
-.gm-style .gm-style-iw-t::after{
-  top:38px;
 }
 .info {
     padding: 10px;

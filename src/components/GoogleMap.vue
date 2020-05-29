@@ -2,6 +2,18 @@
   <div>
     <div class="row scroll-none">
       <div class="col map-sticky">
+        <span class="position-absolute text-searching badge badge-light text-center" v-if="searchLoading">
+          <div class="spinner-border spinner-border-sm mr-2" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <span>Searching...</span>
+        </span>
+        <transition leave-active-class="animate__animated animate__fadeOut animate__faster">
+        <span class="position-absolute text-searching badge badge-light text-center" 
+          v-if="afterLoading && !searchLoading">
+          <span>{{circle_markers.length}} of {{markers.length}} results</span>
+        </span>
+        </transition>
         <gmap-map
           ref="mapRef"
           :options="{
@@ -22,6 +34,7 @@
           @center_changed="updateCenter"
           @zoom_changed="updateZoom"
           @drag="infoWinOpen = false"
+          @idle="updateData"
           >
 
           <gmap-info-window 
@@ -44,46 +57,16 @@
 
       <div class="col pr-0 pl-0 main">
         <p class="pl-3 pt-3 font-weight-bold">{{circle_markers.length ? circle_markers.length : 'No' }} results</p>
-        <div class="row p-3">
-          <div class="col-md-6" 
-            v-for="(m,index) in circle_markers" :key="index" @mouseover="toggleInfoWindow(m,index)"
-            @mouseout="infoWinOpen = !infoWinOpen"
-            >
-            <div class="card mb-3">
-              <a href="#">
-                <img class="card-img-top img-fit" src="../assets/sale.jpg" alt="Card image cap">
-              </a>                                       
-              <div class="img-block">                    
-                <div class="rate-info">                  
-                  <h5> {{m.infoText}}</h5>                        
-                  <span class="for-sale">FOR SALE</span  >
-                </div>                                   
-              </div>                                     
-                                                         
-              <div class="text-dark card-body">
-                <div class="text-dark font-weight-bold mb-1 hov_pointer card-title h5">{{m.name}}</div>
-                <p class="fs-12 text-secondary card-text"><i class="jsx-1104155267 fal fa-map-marker-alt"></i> Seminyak, Kuta, Bali 30123.</p>
-                <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-bed fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2</span></span>
-                <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-bath fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2</span></span>
-                <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-expand-arrows fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2 are</span></span>
-                <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-home fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">1300 m²</span></span>
-                <span class="font-weight-normal pl-0 mr-2 badge"><i class="jsx-1104155267 far fa-file-certificate fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">Lease Hold</span></span>
-              </div><!--/card-body-->
+        <transition-group class="row p-3" tag="div"
+          enter-active-class="animate__animated animate__fadeIn animate__faster"
+          leave-active-class="animate__animated animate__fadeOut animate__faster">
+           <div class="col-md-6" v-for="(m,index) in circle_markers" :key="index" 
+            @mouseover="toggleInfoWindow(m,index)"
+            @mouseout="infoWinOpen = !infoWinOpen">
 
-              <div class="text-muted card-footer">
-                <div class="fs-12 row">
-                  <div class="col"><i class="jsx-1104155267 fal fa-lg fa-calendar-check mr-2"></i> 2 Days ago</div>
-                  <div class="text-right col">
-                    <span class="jsx-1104155267 text-decoration-none text-muted mr-2 pr-2 hov_pointer bd-right"><i class="jsx-1104155267 fal fa-lg fa-heart"></i></span>
-                    <a class="jsx-1104155267 text-decoration-none text-muted hov_pointer]"><i class="jsx-1104155267 fal fa-lg fa-share-alt"></i></a>
-                  </div>
-                </div>
-              </div><!--/card-footer-->
-
-            </div><!--/card-->
-
-          </div><!--/col-->
-        </div><!--/row-->
+            <app-card :price="m.infoText" :name="m.name"></app-card>
+           </div>
+        </transition-group>
       </div>
 
     </div><!-- row -->
@@ -92,15 +75,19 @@
 
 <script>
 import {gmapApi} from 'vue2-google-maps'
+import Card from './Card.vue'
 
 const mapMarker = require('../assets/marker.png');
 
 export default {
   data() {
     return {
+      searchLoading: false,
+      afterLoading: false,
       center: { lat: -8.340539, lng: 115.091949 },
       circle_markers: [],
       current_position: {lat: null,lng: null},
+      current_zoom: null,
       radius:0,
       markers: [
         {position:{lat: -8.340539,lng: 115.091948},infoText:'$200',name:'item1'},
@@ -136,55 +123,50 @@ export default {
 
   methods:{
     updateZoom(e){
-      if (e <= 7){
-        this.circle_markers = []
-        return false
-      }
-      if (e == 8) this.radius = 60000
-      if (e == 9) this.radius = 50000
-      if (e == 10) this.radius = 30000
-      if (e == 11) this.radius = 20000
-      if (e >= 12) this.radius = 10000
-      if (e >= 13) this.radius = (300*100) / e
-
-      var searchArea = new this.google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        center : new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng),
-        radius : this.radius
-      });
-      this.circle_markers = []
-      this.markers.map((x) => {
-        var lol = new this.google.maps.LatLng(x.position.lat,x.position.lng)
-        if (this.google.maps.geometry.spherical.computeDistanceBetween(lol, searchArea.getCenter()) 
-          <= searchArea.getRadius()) {
-            this.circle_markers.push(x)
-          }
-      })
-
+      this.current_zoom = e
     },
     updateCenter(e) {
-      // set to global
       this.current_position.lat = e.lat()
       this.current_position.lng = e.lng()
+    },
+    updateData(){
+      this.searchLoading = true
+      setTimeout(() => {
+        this.searchLoading = false
 
-      var searchArea = new this.google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        center : new this.google.maps.LatLng(e.lat(), e.lng()),
-        radius : this.radius
-      });
-      this.circle_markers = []
-      this.markers.map((x) => {
-        var lol = new this.google.maps.LatLng(x.position.lat,x.position.lng)
-        if (this.google.maps.geometry.spherical.computeDistanceBetween(lol, searchArea.getCenter()) 
-          <= searchArea.getRadius()) {
-            this.circle_markers.push(x)
+        if (this.current_zoom){
+          if (this.current_zoom <= 7){
+            this.circle_markers = []
+            return false
           }
-      })
+          if (this.current_zoom == 8) this.radius = 60 * 1000 // 60 km
+          if (this.current_zoom == 9) this.radius = 50 * 1000 // 50 km
+          if (this.current_zoom == 10) this.radius = 30 * 1000 // 30 km
+          if (this.current_zoom == 11) this.radius = 20 * 1000 // 20 km
+          if (this.current_zoom >= 12) this.radius = 10 * 1000 // 10 km
+          if (this.current_zoom >= 13) this.radius = (30 * 1000) / this.current_zoom
+        }
 
+        var searchArea = new this.google.maps.Circle({
+          strokeColor: '#FF0000',
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          center : new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng),
+          radius : this.radius
+        });
+
+        this.circle_markers = []
+
+        this.markers.map((x) => {
+          var lol = new this.google.maps.LatLng(x.position.lat,x.position.lng)
+          if (this.google.maps.geometry.spherical.computeDistanceBetween(lol, searchArea.getCenter()) 
+            <= searchArea.getRadius()) {
+              this.circle_markers.push(x)
+            }
+        })
+
+        this.afterLoading = true
+      }, 1000)
     },
     toggleInfoWindow (marker, idx) {
       var content = "<h6 class='font-weight-bold' style='padding:14px;padding-bottom:6px;'>" + marker.infoText + "</h6>"
@@ -212,34 +194,13 @@ export default {
     }
   },
   mounted(){
-    // At this point, the child GmapMap has been mounted, but
-    // its map has not been initialized.
-    // Therefore we need to write mapRef.$mapPromise.then(() => ...)
-
-    this.$refs.mapRef.$mapPromise.then((map) => {
-      map.panTo({lat: this.center.lat, lng: this.center.lng})
-
-      // set to global
-      this.current_position.lat = this.center.lat
-      this.current_position.lng = this.center.lng
-      this.radius = 30000
-
-      var searchArea = new this.google.maps.Circle({
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        center : new this.google.maps.LatLng(this.center.lat,this.center.lng),
-        radius : this.radius
-      });
-      this.markers.map((x) => {
-        var lol = new this.google.maps.LatLng(x.position.lat,x.position.lng)
-        if (this.google.maps.geometry.spherical.computeDistanceBetween(lol, searchArea.getCenter()) 
-          <= searchArea.getRadius()) {
-            this.circle_markers.push(x)
-          }
-      })
-
-    })
+    // set to global
+    this.current_position.lat = this.center.lat
+    this.current_position.lng = this.center.lng
+    this.radius = 30 * 1000 // 30 km
+  },
+  components:{
+    appCard:Card
   }
 }
 </script>
@@ -269,69 +230,21 @@ export default {
 .info .price {
   font-size: 13px;
 }
-/* Card Label */
-.rate-info {
-    float: left;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 40px 23px 20px 23px;
-    z-index: 2;
+.text-searching{
+  z-index: 10;
+  margin: 0 auto;
+  top: 2rem;
+  font-size: 1rem;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 15px 20px;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgb(255, 255, 255) !important;
+  border-radius: 8px !important;
 }
-.rate-info:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.02), rgba(44, 44, 47, 47));
-    z-index: -1;
-}
-.cer span {
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 12px;
-    background: rgba(145, 147, 152, 0.7);
-    border-radius: 50px;
-    padding: 5px 13px;
-    float: right;
-    /* margin-right: 24px; */
-    margin-top: 2px;
-}
-.img-block {
-    position: relative;
-    z-index: 1;
-    float: left;
-    width: 100%;
-}
-.img-block h5, .map-box .rate-info > h5 {
-    margin: 0px;
-    color: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    float: left;
-    /* padding-left: 24px; */
-    position: relative;
-    top: 5px;
-}
-.card .img-block span, .map-box .rate-info > span {
-    color: #fff;
-    text-transform: uppercase;
-    font-size: 12px;
-    background: rgba(145, 147, 152, 0.7);
-    border-radius: 50px;
-    padding: 5px 13px;
-    float: right;
-    /* margin-right: 24px; */
-    margin-top: 2px;
-}
-.card .img-block span.for-sale, .map-box .rate-info > span.for-sale {
-    background: #fc384a;
-}
-.card .img-block span.for-rent, .map-box .rate-info > span.for-rent {
-    background: #1778F2;
+.gmnoprint > div {
+  border-radius: 8px !important;
 }
 .map-sticky {
   position: sticky;

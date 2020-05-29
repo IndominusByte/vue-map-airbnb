@@ -60,7 +60,7 @@
         <transition-group class="row p-3" tag="div"
           enter-active-class="animate__animated animate__fadeIn animate__faster"
           leave-active-class="animate__animated animate__fadeOut animate__faster">
-           <div class="col-md-6" v-for="(m,index) in circle_markers" :key="index" 
+           <div class="col-md-6" v-for="(m,index) in circle_markers" :key="m.name" 
             @mouseover="toggleInfoWindow(m,index)"
             @mouseout="infoWinOpen = !infoWinOpen">
 

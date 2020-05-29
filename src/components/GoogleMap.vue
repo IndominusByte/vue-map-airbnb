@@ -46,7 +46,7 @@
             v-for="(m, index) in circle_markers"
             :key="index"
             :position="m.position"
-            :icon="markerOptions"
+            :icon="!m.clicked ? markerOptions : markerClicked"
             @click="markerInfoWindow(m,index)">
           </gmap-marker>
         </gmap-map>
@@ -75,6 +75,7 @@ import {gmapApi} from 'vue2-google-maps'
 import Card from './Card.vue'
 
 const mapMarker = require('../assets/marker.png');
+const mapMarkerClicked = require('../assets/marker-clicked.png');
 
 export default {
   data() {
@@ -87,15 +88,19 @@ export default {
       current_zoom: null,
       radius: null,
       markers: [
-        {position:{lat: -8.340539,lng: 115.091948},infoText:'$200',name:'item1'},
-        {position:{lat: -8.267559,lng: 114.524339},infoText:'$1800',name:'item2'},
-        {position:{lat: -8.506854,lng: 115.262482},infoText:'$1300',name:'item3'},
-        {position:{lat: -8.438413,lng: 115.496922},infoText:'$3900',name:'item4'},
-        {position:{lat: -8.811012,lng: 115.173601},infoText:'$2200',name:'item5'},
-        {position:{lat: -8.582952,lng: 115.085652},infoText:'$550',name:'item6'},
+        {position:{lat: -8.340539,lng: 115.091948},infoText:'$200',name:'item1',clicked: false},
+        {position:{lat: -8.267559,lng: 114.524339},infoText:'$1800',name:'item2',clicked: false},
+        {position:{lat: -8.506854,lng: 115.262482},infoText:'$1300',name:'item3',clicked: false},
+        {position:{lat: -8.438413,lng: 115.496922},infoText:'$3900',name:'item4',clicked: false},
+        {position:{lat: -8.811012,lng: 115.173601},infoText:'$2200',name:'item5',clicked: false},
+        {position:{lat: -8.582952,lng: 115.085652},infoText:'$550',name:'item6',clicked: false},
       ],
       markerOptions: {
         url: mapMarker,
+        scaledSize: {width: 45, height: 45, f: 'px', b: 'px'},
+      },
+      markerClicked: {
+        url: mapMarkerClicked,
         scaledSize: {width: 50, height: 50, f: 'px', b: 'px'},
       },
 
@@ -185,6 +190,7 @@ export default {
       }
       //if different marker set infowindow to open and reset current marker index
       else {
+        marker.clicked = true
         this.infoWinOpen = true;
         this.currentMidx = idx;
       }

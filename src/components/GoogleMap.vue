@@ -33,7 +33,7 @@
           style="width:100%;height: 100vh;"
           @center_changed="updateCenter"
           @zoom_changed="updateZoom"
-          @drag="infoWinOpen = false"
+          @tilesloaded="infoWinOpen = false"
           @idle="updateData">
 
           <gmap-info-window 
@@ -53,15 +53,61 @@
       </div>
 
       <div class="col pr-0 pl-0 main">
+        <div class="container mt-4">
+          <form>
+            <div class="form-group">
+              <label for="inputAddress" class="map-search-title">Location</label>
+              <input type="text" class="form-control" id="inputAddress" placeholder="Enter Address, City or State">
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <div class="dropdown">
+                  <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Type
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Modern Style</a>
+                    <a class="dropdown-item" href="#">Balinese</a>
+                    <a class="dropdown-item" href="#">Luxury</a>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <div class="dropdown">
+                  <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Status
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Free Hold</a>
+                    <a class="dropdown-item" href="#">Lease Hold</a>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <div class="dropdown">
+                  <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Price
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-red-hot btn-block">Search</button>
+          </form>
+        </div>
         <p class="pl-3 pt-3 font-weight-bold">{{circle_markers.length ? circle_markers.length : 'No' }} results</p>
         <transition-group class="row p-3" tag="div"
           enter-active-class="animate__animated animate__fadeIn animate__faster"
           leave-active-class="animate__animated animate__fadeOut animate__faster">
-           <div class="col-md-6" v-for="(m,index) in circle_markers" :key="m.name" 
+           <div class="col-12" v-for="(m,index) in circle_markers" :key="m.name" 
             @mouseover="toggleInfoWindow(m,index)"
             @mouseout="infoWinOpen = !infoWinOpen">
 
-            <app-card :price="m.infoText" :name="m.name"></app-card>
+            <app-card :price="m.price" :name="m.name" :image="m.image" :location="m.location"></app-card>
            </div>
         </transition-group>
       </div>
@@ -88,12 +134,48 @@ export default {
       current_zoom: null,
       radius: null,
       markers: [
-        {position:{lat: -8.340539,lng: 115.091948},infoText:'$200',name:'item1',clicked: false},
-        {position:{lat: -8.267559,lng: 114.524339},infoText:'$1800',name:'item2',clicked: false},
-        {position:{lat: -8.506854,lng: 115.262482},infoText:'$1300',name:'item3',clicked: false},
-        {position:{lat: -8.438413,lng: 115.496922},infoText:'$3900',name:'item4',clicked: false},
-        {position:{lat: -8.811012,lng: 115.173601},infoText:'$2200',name:'item5',clicked: false},
-        {position:{lat: -8.582952,lng: 115.085652},infoText:'$550',name:'item6',clicked: false},
+        {position: {lat: -8.340539,lng: 115.091948},
+          price:'$200',
+          name:'Bali Property for Sale – Chill House Hipster Retreat',
+          image:'property1.jpg',
+          location:'Canggu, Pererenan',
+          clicked: false
+        },
+        {position:{lat: -8.267559,lng: 114.524339},
+          price:'$1800',
+          name:'Flawless Uluwatu Villa Zsa Zsa Finally for Sale',
+          image:'property2.jpg',
+          location:'Canggu, Tabanan, Tanah Lot',
+          clicked: false
+        },
+        {position:{lat: -8.506854,lng: 115.262482},
+          price:'$1300',
+          name:'High Ranking Boutique Resort for Sale in Sanur',
+          image:'property3.jpg',
+          location:'Bukit, Ungasan',
+          clicked: false
+        },
+        {position:{lat: -8.438413,lng: 115.496922},
+          price:'$3900',
+          name:'Modern Bali Villa for Rent in Seminyak',
+          image:'property4.jpg',
+          location:'Ubud, Tegallalang',
+          clicked: false
+        },
+        {position:{lat: -8.811012,lng: 115.173601},
+          price:'$2200',
+          name:'Chic Serenity in Beach Lovers Paradise – Sanur.',
+          image:'property5.jpg',
+          location:'Canggu, Berawa',
+          clicked: false
+        },
+        {position:{lat: -8.582952,lng: 115.085652},
+          price:'$550',
+          name:'Breathtaking Exotic Sanur Residence',
+          image:'property6.jpg',
+          location:'Canggu, Mengwi, Tumbak',
+          clicked: false
+        },
       ],
       markerOptions: {
         url: mapMarker,
@@ -171,7 +253,11 @@ export default {
       }, 1000)
     },
     toggleInfoWindow (marker, idx) {
-      var content = "<h6 class='font-weight-bold' style='padding:14px;padding-bottom:6px;'>" + marker.infoText + "</h6>"
+      var content = `
+      <h6 class="font-weight-bold" style="padding:15px;padding-bottom:7px;"> 
+        ${marker.price} 
+      </h6>`
+
       this.infoWindowPos = marker.position;
       this.infoOptions.content = content;
 
@@ -180,7 +266,32 @@ export default {
     },
 
     markerInfoWindow (marker,idx){
-      var content = "<img src='https://firebasestorage.googleapis.com/v0/b/zooka-tampilan.appspot.com/o/sale.jpg?alt=media&token=8f453e22-bbe4-44e3-8f7f-fcfab9b87810' class='' width='200'>" + "<div class='info'>" + "<div class='title'>" + marker.name + "</div>" +"<div class='price'>"+ marker.infoText + "</div>" + "</div>"
+      var content = `
+      <img src="/properties/${marker.image}" class="img-marker">
+      <div class="info">
+        <div class="location text-truncate">
+        <i class="fal fa-map-marker-alt mr-1"></i> <span class="text-secondary">${marker.location}</span>
+        </div>
+        <div class="title mt-2 text-truncate">
+          ${marker.name}
+        </div>
+        <div class="price mt-1 mb-2">
+          ${marker.price}
+        </div>
+        <span class="font-weight-normal pl-0 mr-1 bd-right badge">
+          <i class="far fa-bed fa-lg mr-2"></i><span style="font-size:14px;">2</span>
+        </span>
+        <span class="font-weight-normal pl-0 mr-1 bd-right badge">
+          <i class="far fa-bath fa-lg mr-2"></i><span style="font-size:14px;">2</span>
+        </span>
+        <span class="font-weight-normal pl-0 mr-1 bd-right badge">
+          <i class="far fa-expand-arrows fa-lg mr-2"></i><span style="font-size:14px;">2 are</span>
+        </span>
+        <span class="font-weight-normal pl-0 mr-1 bd-right badge">
+          <i class="far fa-home fa-lg mr-2"></i><span style="font-size:14px;">1300 m²</span>
+        </span>
+      </div>`
+
       this.infoWindowPos = marker.position;
       this.infoOptions.content = content;
 
@@ -219,19 +330,45 @@ export default {
 .gm-style .gm-style-iw-c{
   padding: 0px;
   top:40px;
+  border-radius:12px;
+}
+.map-search-title {
+    font-weight: 600 !important;
+    color: rgb(34, 34, 34) !important;
+}
+.btn-red-hot {
+  background-color: #ff385c;
+  color: #fff;
+}
+.btn-red-hot:hover {
+    background-color: #ff385c;
+    color: #fff;
 }
 .info {
     padding: 10px;
     text-align: left;
     overflow-wrap: break-word;
 }
+.info .location{
+  font-size: 14px !important;
+  max-width:230px;
+}
 .info .title {
-    font-size: 16px;
-    font-weight: 500;
+    font-weight: 400 !important;
+    color: rgb(34, 34, 34) !important;
+    font-size: 16px !important;
     padding-bottom: 5px;
+    max-width: 230px;
 }
 .info .price {
-  font-size: 13px;
+  color: rgb(34, 34, 34) !important;
+  font-weight: 800;
+  font-size: 16px !important;
+}
+.img-marker {
+  object-fit: cover;
+  width: 250px;
+  height: 200px;
 }
 .text-searching{
   z-index: 10;

@@ -51,10 +51,32 @@
           </gmap-marker>
         </gmap-map>
       </div>
-
       <div class="col pr-0 pl-0 main">
         <div class="container mt-4">
-          <form>
+          <div class="hov_none shadow-none m-t-35 card">
+            <div class=" card-body property-distance">
+              <h3 class=" card-title mb-4">Distance to:</h3>
+              <div class="row">
+                <div class="mb-2 col-lg-4 col-md-6">
+                  <h4 class=" fs-14"><i class=" fal fa-credit-card mr-2 fs-16"></i>ATM:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.atm}} Km</span></h4>
+                </div>
+                <div class="mb-2 col-lg-4 col-md-6">
+                  <h4 class=" fs-14"><i class=" fal fa-utensils mr-2 fs-16"></i>Retaurant:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.restaurant}} Km</span></h4>
+                </div>
+                <div class="mb-2 col-lg-4 col-md-6">
+                  <h4 class=" fs-14"><i class=" fal fa-mug-hot mr-2 fs-16"></i>Cafe:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.cafe}} Km</span></h4>
+                </div>
+                <div class="mb-2 col-lg-4 col-md-6">
+                  <h4 class=" fs-14"><i class=" fal fa-capsules mr-2 fs-16"></i>Pharmacy:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.pharmacy}} Km</span></h4>
+                </div>
+                <div class="mb-2 col-lg-4 col-md-6">
+                  <h4 class=" fs-14"><i class=" fal fa-store mr-2 fs-16"></i>Corner Store:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.convenience_store}} Km</span></h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form class="mt-4">
             <div class="form-group">
               <label for="inputAddress" class="map-search-title">Location</label>
               <input type="text" class="form-control" id="inputAddress" placeholder="Enter Address, City or State">
@@ -133,6 +155,20 @@ export default {
       current_position: {lat: null,lng: null},
       current_zoom: null,
       radius: null,
+      current_distance: {
+        atm: {lat: null,lng: null},
+        restaurant: {lat: null,lng: null},
+        cafe: {lat: null,lng: null},
+        pharmacy: {lat: null,lng: null},
+        convenience_store: {lat: null,lng: null}
+      },
+      distance_from:{
+        atm: null,
+        restaurant: null,
+        cafe: null,
+        pharmacy: null,
+        convenience_store: null
+      },
       markers: [
         {position: {lat: -8.340539,lng: 115.091948},
           price:'$200',
@@ -206,6 +242,54 @@ export default {
   },
 
   methods:{
+    rad(x){
+      return x * Math.PI / 180
+    },
+    getDistance(p1,p2){
+      var R = 6378137 // Earth’s mean radius in meter
+      var dLat = this.rad(p2.lat() - p1.lat())
+      var dLong = this.rad(p2.lng() - p1.lng())
+      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
+        Math.sin(dLong / 2) * Math.sin(dLong / 2)
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      var d = R * c
+      return d // returns the distance in meter
+    },
+    callbackRestaurant(results,status){
+      if (status == this.google.maps.places.PlacesServiceStatus.OK) {
+        var last = results[0]
+        this.current_distance.restaurant.lat = last.geometry.location.lat()
+        this.current_distance.restaurant.lng = last.geometry.location.lng()
+      }
+    },
+    callbackAtm(results,status){
+      if (status == this.google.maps.places.PlacesServiceStatus.OK) {
+        var last = results[0]
+        this.current_distance.atm.lat = last.geometry.location.lat()
+        this.current_distance.atm.lng = last.geometry.location.lng()
+      }
+    },
+    callbackCafe(results,status){
+      if (status == this.google.maps.places.PlacesServiceStatus.OK) {
+        var last = results[0]
+        this.current_distance.cafe.lat = last.geometry.location.lat()
+        this.current_distance.cafe.lng = last.geometry.location.lng()
+      }
+    },
+    callbackPharmacy(results,status){
+      if (status == this.google.maps.places.PlacesServiceStatus.OK) {
+        var last = results[0]
+        this.current_distance.pharmacy.lat = last.geometry.location.lat()
+        this.current_distance.pharmacy.lng = last.geometry.location.lng()
+      }
+    },
+    callbackConvenienceStore(results,status){
+      if (status == this.google.maps.places.PlacesServiceStatus.OK) {
+        var last = results[0]
+        this.current_distance.convenience_store.lat = last.geometry.location.lat()
+        this.current_distance.convenience_store.lng = last.geometry.location.lng()
+      }
+    },
     updateZoom(e){
       this.current_zoom = e
     },
@@ -214,6 +298,58 @@ export default {
       this.current_position.lng = e.lng()
     },
     updateData(){
+      var current_cursor = new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng)
+      // object map
+      var map = new this.google.maps.places.PlacesService(this.$refs['mapRef'].$mapObject)
+      // search nearby restaurant from current cursor
+      map.nearbySearch({
+        location: current_cursor, //Add initial lat/lon here
+        rankBy: this.google.maps.places.RankBy.DISTANCE,
+        type: ['restaurant'],
+      }, this.callbackRestaurant);
+      // search nearby atm from current cursor
+      map.nearbySearch({
+        location: current_cursor, //Add initial lat/lon here
+        rankBy: this.google.maps.places.RankBy.DISTANCE,
+        type: ['atm'],
+      }, this.callbackAtm);
+      // search nearby cafe from current cursor
+      map.nearbySearch({
+        location: current_cursor, //Add initial lat/lon here
+        rankBy: this.google.maps.places.RankBy.DISTANCE,
+        type: ['cafe'],
+      }, this.callbackCafe);
+      // search nearby pharmacy from current cursor
+      map.nearbySearch({
+        location: current_cursor, //Add initial lat/lon here
+        rankBy: this.google.maps.places.RankBy.DISTANCE,
+        type: ['pharmacy'],
+      }, this.callbackPharmacy);
+      // search nearby convenience_store from current cursor
+      map.nearbySearch({
+        location: current_cursor, //Add initial lat/lon here
+        rankBy: this.google.maps.places.RankBy.DISTANCE,
+        type: ['convenience_store'],
+      }, this.callbackConvenienceStore);
+
+
+      var restaurant = new this.google.maps.LatLng(this.current_distance.restaurant.lat,
+        this.current_distance.restaurant.lng)
+      var atm = new this.google.maps.LatLng(this.current_distance.atm.lat,
+        this.current_distance.atm.lng)
+      var cafe = new this.google.maps.LatLng(this.current_distance.cafe.lat,
+        this.current_distance.cafe.lng)
+      var pharmacy = new this.google.maps.LatLng(this.current_distance.pharmacy.lat,
+        this.current_distance.pharmacy.lng)
+      var convenience_store = new this.google.maps.LatLng(this.current_distance.convenience_store.lat,
+        this.current_distance.convenience_store.lng)
+
+      this.distance_from.restaurant = Math.floor(this.getDistance(current_cursor,restaurant) / 100)
+      this.distance_from.atm = Math.floor(this.getDistance(current_cursor,atm) / 100)
+      this.distance_from.cafe = Math.floor(this.getDistance(current_cursor,cafe) / 100)
+      this.distance_from.pharmacy = Math.floor(this.getDistance(current_cursor,pharmacy) / 100)
+      this.distance_from.convenience_store = Math.floor(this.getDistance(current_cursor,convenience_store) / 100)
+
       this.searchLoading = true
       setTimeout(() => {
         this.searchLoading = false
@@ -400,5 +536,12 @@ export default {
 }
 .main::-webkit-scrollbar {
     display: none;
+}
+.property-distance h3{
+  color: rgb(34,34,34) !important;
+  font-size: 22px !important;
+}
+.fs-14{
+  font-size: 14px;
 }
 </style>

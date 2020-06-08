@@ -8,7 +8,7 @@ Vue.use(VueLodash, { name: 'custom' , lodash: lodash })
 
 Vue.use(VueGoogleMaps, {
   load: {
-    libraries: 'geometry',
+    libraries: ['geometry','places'],
     key: process.env.VUE_APP_GOOGLE_APIKEY,
   }
 });

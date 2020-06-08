@@ -22,14 +22,16 @@
         <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-home fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">1300 m²</span></span>
         <span class="font-weight-normal pl-0 mr-2 badge"><i class="jsx-1104155267 far fa-file-certificate fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">Lease Hold</span></span>
 
-        <div class="fs-12 row mt-4">
+      </div><!--/card-body-->
+      <div class="card-footer bg-white text-muted">
+        <div class="fs-12 row ">
           <div class="col"><i class="jsx-1104155267 fal fa-lg fa-calendar-check mr-2"></i> 2 Days ago</div>
           <div class="text-right col">
             <span class="jsx-1104155267 text-decoration-none text-muted mr-2 pr-2 hov_pointer bd-rt"><i class="jsx-1104155267 fal fa-lg fa-heart"></i></span>
             <a class="jsx-1104155267 text-decoration-none text-muted hov_pointer]"><i class="jsx-1104155267 fal fa-lg fa-share-alt"></i></a>
           </div>
         </div>
-      </div><!--/card-body-->
+      </div>
     </div><!--/col-->
     
   </div><!--/row-no-gutters-->

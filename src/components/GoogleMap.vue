@@ -148,7 +148,7 @@ const mapMarkerClicked = require('../assets/marker-clicked.png');
 export default {
   data() {
     return {
-      center: { lat: -8.340539, lng: 115.091949 },
+      center: { lat: -8.381357822670871, lng: 115.13967209436002 },
       searchLoading: false,
       afterLoading: false,
       circle_markers: [],
@@ -246,61 +246,55 @@ export default {
       return x * Math.PI / 180
     },
     getDistance(p1,p2){
-      var R = 6378137 // Earth’s mean radius in meter
-      var dLat = this.rad(p2.lat() - p1.lat())
-      var dLong = this.rad(p2.lng() - p1.lng())
-      var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
+      /* Haversine formula */
+      let R = 6378137 // Earth’s mean radius in meter
+      let dLat = this.rad(p2.lat() - p1.lat())
+      let dLong = this.rad(p2.lng() - p1.lng())
+      let a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(this.rad(p1.lat())) * Math.cos(this.rad(p2.lat())) *
         Math.sin(dLong / 2) * Math.sin(dLong / 2)
-      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-      var d = R * c
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+      let d = R * c
       return d // returns the distance in meter
     },
     callbackRestaurant(results,status){
       if (status == this.google.maps.places.PlacesServiceStatus.OK) {
-        var last = results[0]
+        let last = results[0]
         this.current_distance.restaurant.lat = last.geometry.location.lat()
         this.current_distance.restaurant.lng = last.geometry.location.lng()
       }
     },
     callbackAtm(results,status){
       if (status == this.google.maps.places.PlacesServiceStatus.OK) {
-        var last = results[0]
+        let last = results[0]
         this.current_distance.atm.lat = last.geometry.location.lat()
         this.current_distance.atm.lng = last.geometry.location.lng()
       }
     },
     callbackCafe(results,status){
       if (status == this.google.maps.places.PlacesServiceStatus.OK) {
-        var last = results[0]
+        let last = results[0]
         this.current_distance.cafe.lat = last.geometry.location.lat()
         this.current_distance.cafe.lng = last.geometry.location.lng()
       }
     },
     callbackPharmacy(results,status){
       if (status == this.google.maps.places.PlacesServiceStatus.OK) {
-        var last = results[0]
+        let last = results[0]
         this.current_distance.pharmacy.lat = last.geometry.location.lat()
         this.current_distance.pharmacy.lng = last.geometry.location.lng()
       }
     },
     callbackConvenienceStore(results,status){
       if (status == this.google.maps.places.PlacesServiceStatus.OK) {
-        var last = results[0]
+        let last = results[0]
         this.current_distance.convenience_store.lat = last.geometry.location.lat()
         this.current_distance.convenience_store.lng = last.geometry.location.lng()
       }
     },
-    updateZoom(e){
-      this.current_zoom = e
-    },
-    updateCenter(e) {
-      this.current_position.lat = e.lat()
-      this.current_position.lng = e.lng()
-    },
-    updateData(){
-      var current_cursor = new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng)
+    getDistanceTo(){
+      let current_cursor = new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng)
       // object map
-      var map = new this.google.maps.places.PlacesService(this.$refs['mapRef'].$mapObject)
+      let map = new this.google.maps.places.PlacesService(this.$refs['mapRef'].$mapObject)
       // search nearby restaurant from current cursor
       map.nearbySearch({
         location: current_cursor, //Add initial lat/lon here
@@ -333,22 +327,33 @@ export default {
       }, this.callbackConvenienceStore);
 
 
-      var restaurant = new this.google.maps.LatLng(this.current_distance.restaurant.lat,
+      let restaurant = new this.google.maps.LatLng(this.current_distance.restaurant.lat,
         this.current_distance.restaurant.lng)
-      var atm = new this.google.maps.LatLng(this.current_distance.atm.lat,
+      let atm = new this.google.maps.LatLng(this.current_distance.atm.lat,
         this.current_distance.atm.lng)
-      var cafe = new this.google.maps.LatLng(this.current_distance.cafe.lat,
+      let cafe = new this.google.maps.LatLng(this.current_distance.cafe.lat,
         this.current_distance.cafe.lng)
-      var pharmacy = new this.google.maps.LatLng(this.current_distance.pharmacy.lat,
+      let pharmacy = new this.google.maps.LatLng(this.current_distance.pharmacy.lat,
         this.current_distance.pharmacy.lng)
-      var convenience_store = new this.google.maps.LatLng(this.current_distance.convenience_store.lat,
+      let convenience_store = new this.google.maps.LatLng(this.current_distance.convenience_store.lat,
         this.current_distance.convenience_store.lng)
 
-      this.distance_from.restaurant = Math.floor(this.getDistance(current_cursor,restaurant) / 100)
-      this.distance_from.atm = Math.floor(this.getDistance(current_cursor,atm) / 100)
-      this.distance_from.cafe = Math.floor(this.getDistance(current_cursor,cafe) / 100)
-      this.distance_from.pharmacy = Math.floor(this.getDistance(current_cursor,pharmacy) / 100)
-      this.distance_from.convenience_store = Math.floor(this.getDistance(current_cursor,convenience_store) / 100)
+      this.distance_from.restaurant = (this.getDistance(current_cursor,restaurant) / 1000).toFixed(2)
+      this.distance_from.atm = (this.getDistance(current_cursor,atm) / 1000).toFixed(2)
+      this.distance_from.cafe = (this.getDistance(current_cursor,cafe) / 1000).toFixed(2)
+      this.distance_from.pharmacy = (this.getDistance(current_cursor,pharmacy) / 1000).toFixed(2)
+      this.distance_from.convenience_store = (this.getDistance(current_cursor,convenience_store) / 1000).toFixed(2)
+
+    },
+    updateZoom(e){
+      this.current_zoom = e
+    },
+    updateCenter(e) {
+      this.current_position.lat = e.lat()
+      this.current_position.lng = e.lng()
+    },
+    updateData(){
+      this.getDistanceTo()
 
       this.searchLoading = true
       setTimeout(() => {
@@ -367,10 +372,8 @@ export default {
           if (this.current_zoom >= 13) this.radius = (30 * 1000) / this.current_zoom
         }
 
-        var searchArea = new this.google.maps.Circle({
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.8,
-          strokeWeight: 2,
+        // default radius in meters
+        let searchArea = new this.google.maps.Circle({
           center : new this.google.maps.LatLng(this.current_position.lat,this.current_position.lng),
           radius : this.radius
         });
@@ -378,8 +381,8 @@ export default {
         this.circle_markers = []
 
         this.markers.map((x) => {
-          var lol = new this.google.maps.LatLng(x.position.lat,x.position.lng)
-          if (this.google.maps.geometry.spherical.computeDistanceBetween(lol, searchArea.getCenter()) 
+          let marker_position = new this.google.maps.LatLng(x.position.lat,x.position.lng)
+          if (this.google.maps.geometry.spherical.computeDistanceBetween(marker_position, searchArea.getCenter()) 
             <= searchArea.getRadius()) {
               this.circle_markers.push(x)
             }
@@ -389,7 +392,7 @@ export default {
       }, 1000)
     },
     toggleInfoWindow (marker, idx) {
-      var content = `
+      let content = `
       <h6 class="font-weight-bold" style="padding:15px;padding-bottom:7px;"> 
         ${marker.price} 
       </h6>`
@@ -402,7 +405,7 @@ export default {
     },
 
     markerInfoWindow (marker,idx){
-      var content = `
+      let content = `
       <img src="/properties/${marker.image}" class="img-marker">
       <div class="info">
         <div class="location text-truncate">
@@ -448,6 +451,9 @@ export default {
     this.current_position.lat = this.center.lat
     this.current_position.lng = this.center.lng
     this.radius = 30 * 1000 // 30 km
+    setTimeout(() => {
+      this.getDistanceTo()
+    }, 1000)
   },
   components:{
     appCard:Card

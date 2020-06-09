@@ -451,9 +451,9 @@ export default {
     this.current_position.lat = this.center.lat
     this.current_position.lng = this.center.lng
     this.radius = 30 * 1000 // 30 km
-    setTimeout(() => {
-      this.getDistanceTo()
-    }, 1000)
+  },
+  updated(){
+    this.getDistanceTo()
   },
   components:{
     appCard:Card

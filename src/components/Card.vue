@@ -4,31 +4,19 @@
     <div class="col-md-4">
       <a href="#">
         <img class="img-fit img-left" :src="'/properties/' + image" alt="...">
-      </a>                                       
-      <div class="img-block">                    
-        <div class="rate-info">                  
-          <!-- <h5> {{price}} <small class="fs-12"> / monthly</small></h5>                        
-          <span class="for-sale">FOR SALE</span> -->
-        </div>                                   
-      </div>                                     
+      </a>                                                                           
     </div><!--/col-->
     <div class="col-md-8">
       <div class="text-dark card-body">
-        <!-- <div class="text-dark font-weight-bold mb-1 hov_pointer card-title text-truncate h5">{{name}}</div>
+        <div class="text-dark font-weight-bold mb-1 hov_pointer card-title text-truncate h5">{{name}}</div>
         <p class="fs-12 text-secondary card-text text-truncate"><i class="jsx-1104155267 fal fa-map-marker-alt"></i> {{location}}</p>
-        <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-bed fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2</span></span>
-        <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-bath fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2</span></span>
-        <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-expand-arrows fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">2 are</span></span>
-        <span class="font-weight-normal pl-0 mr-2 bd-right badge"><i class="jsx-1104155267 far fa-home fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">1300 m²</span></span>
-        <span class="font-weight-normal pl-0 mr-2 badge"><i class="jsx-1104155267 far fa-file-certificate fa-lg mr-2"></i><span class="jsx-1104155267 pr-1">Lease Hold</span></span> -->
 
       </div><!--/card-body-->
       <div class="card-footer bg-white text-muted">
         <div class="fs-12 row ">
-          <div class="col"><i class="jsx-1104155267 fal fa-lg fa-calendar-check mr-2"></i> 2 Days ago</div>
           <div class="text-right col">
-            <!-- <span class="jsx-1104155267 text-decoration-none text-muted mr-2 pr-2 hov_pointer bd-rt"><i class="jsx-1104155267 fal fa-lg fa-heart"></i></span>
-            <a class="jsx-1104155267 text-decoration-none text-muted hov_pointer]"><i class="jsx-1104155267 fal fa-lg fa-share-alt"></i></a> -->
+            <span class="jsx-1104155267 text-decoration-none text-muted mr-2 pr-2 hov_pointer bd-rt"><i class="jsx-1104155267 fal fa-lg fa-heart"></i></span>
+            <a class="jsx-1104155267 text-decoration-none text-muted hov_pointer]"><i class="jsx-1104155267 fal fa-lg fa-share-alt"></i></a>
           </div>
         </div>
       </div>
@@ -41,7 +29,7 @@
 
 <script>
 export default{
-  //props: ['price','name','image','location']
+  props: ['type','name','image','location']
 }
 </script>
 

@@ -53,10 +53,10 @@
       </div>
       <div class="col pr-0 pl-0 main">
         <div class="container mt-4">
-          <div class="hov_none shadow-none m-t-35 card">
-            <div class=" card-body property-distance">
-              <h3 class=" card-title mb-4">Distance to:</h3>
-              <div class="row">
+          <!-- <div class="hov_none shadow-none m-t-35 card"> -->
+            <!-- <div class=" card-body property-distance">
+              <h3 class=" card-title mb-4">Distance to:</h3> -->
+              <!-- <div class="row">
                 <div class="mb-2 col-lg-4 col-md-6">
                   <h4 class=" fs-14"><i class=" fal fa-credit-card mr-2 fs-16"></i>ATM:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.atm}} Km</span></h4>
                 </div>
@@ -72,16 +72,16 @@
                 <div class="mb-2 col-lg-4 col-md-6">
                   <h4 class=" fs-14"><i class=" fal fa-store mr-2 fs-16"></i>Corner Store:<span class=" font-weight-normal ml-1 text-secondary">{{distance_from.convenience_store}} Km</span></h4>
                 </div>
-              </div>
-            </div>
-          </div>
+              </div> -->
+            <!-- </div> -->
+          <!-- </div> -->
 
           <form class="mt-4">
             <div class="form-group">
               <label for="inputAddress" class="map-search-title">Location</label>
               <input type="text" class="form-control" id="inputAddress" placeholder="Enter Address, City or State">
             </div>
-            <div class="form-row">
+            <!-- <div class="form-row">
               <div class="form-group col-md-4">
                 <div class="dropdown">
                   <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -91,11 +91,11 @@
                     <a class="dropdown-item" href="#">Modern Style</a>
                     <a class="dropdown-item" href="#">Balinese</a>
                     <a class="dropdown-item" href="#">Luxury</a>
-                  </div>
+                  </div> 
                 </div>
               </div>
               <div class="form-group col-md-4">
-                <div class="dropdown">
+                 <div class="dropdown">
                   <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Status
                   </button>
@@ -103,10 +103,10 @@
                     <a class="dropdown-item" href="#">Free Hold</a>
                     <a class="dropdown-item" href="#">Lease Hold</a>
                   </div>
-                </div>
+                </div> 
               </div>
               <div class="form-group col-md-4">
-                <div class="dropdown">
+                 <div class="dropdown">
                   <button class="btn border btn-block dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Price
                   </button>
@@ -115,13 +115,13 @@
                     <a class="dropdown-item" href="#">Another action</a>
                     <a class="dropdown-item" href="#">Something else here</a>
                   </div>
-                </div>
+                </div> 
               </div>
-            </div>
-            <button type="submit" class="btn btn-red-hot btn-block">Search</button>
+            </div> -->
+            <!-- <button type="submit" class="btn btn-red-hot btn-block">Search</button> -->
           </form>
         </div>
-        <p class="pl-3 pt-3 font-weight-bold">{{circle_markers.length ? circle_markers.length : 'No' }} results</p>
+        <!-- <p class="pl-3 pt-3 font-weight-bold">{{circle_markers.length ? circle_markers.length : 'No' }} results</p> -->
         <transition-group class="row p-3" tag="div"
           enter-active-class="animate__animated animate__fadeIn animate__faster"
           leave-active-class="animate__animated animate__fadeOut animate__faster">
@@ -156,57 +156,57 @@ export default {
       current_zoom: null,
       radius: null,
       current_distance: {
-        atm: {lat: null,lng: null},
+        // atm: {lat: null,lng: null},
         restaurant: {lat: null,lng: null},
-        cafe: {lat: null,lng: null},
-        pharmacy: {lat: null,lng: null},
-        convenience_store: {lat: null,lng: null}
+        // cafe: {lat: null,lng: null},
+        // pharmacy: {lat: null,lng: null},
+        // convenience_store: {lat: null,lng: null}
       },
       distance_from:{
-        atm: null,
+        // atm: null,
         restaurant: null,
-        cafe: null,
-        pharmacy: null,
-        convenience_store: null
+        // cafe: null,
+        // pharmacy: null,
+        // convenience_store: null
       },
       markers: [
-        {position: {lat: -8.340539,lng: 115.091948},
-          price:'$200',
+        {position: {lat: 33.52236,lng: -7.64304},
+          price:'MAD200',
           name:'Bali Property for Sale – Chill House Hipster Retreat',
           image:'property1.jpg',
           location:'Canggu, Pererenan',
           clicked: false
         },
-        {position:{lat: -8.267559,lng: 114.524339},
-          price:'$1800',
+        {position:{lat: 33.52143,lng:-7.64331},
+          price:'MAD180',
           name:'Flawless Uluwatu Villa Zsa Zsa Finally for Sale',
           image:'property2.jpg',
           location:'Canggu, Tabanan, Tanah Lot',
           clicked: false
         },
-        {position:{lat: -8.506854,lng: 115.262482},
-          price:'$1300',
+        {position:{lat: 33.52138,lng: -7.64382},
+          price:'MAD1300',
           name:'High Ranking Boutique Resort for Sale in Sanur',
           image:'property3.jpg',
           location:'Bukit, Ungasan',
           clicked: false
         },
-        {position:{lat: -8.438413,lng: 115.496922},
-          price:'$3900',
+        {position:{lat: 33.52359,lng: -7.64184},
+          price:'MAD3900',
           name:'Modern Bali Villa for Rent in Seminyak',
           image:'property4.jpg',
           location:'Ubud, Tegallalang',
           clicked: false
         },
-        {position:{lat: -8.811012,lng: 115.173601},
-          price:'$2200',
+        {position:{lat: 33.97947,lng: -6.87280},
+          price:'MAD2200',
           name:'Chic Serenity in Beach Lovers Paradise – Sanur.',
           image:'property5.jpg',
           location:'Canggu, Berawa',
           clicked: false
         },
-        {position:{lat: -8.582952,lng: 115.085652},
-          price:'$550',
+        {position:{lat:33.60818,lng: -7.65547},
+          price:'MAD550',
           name:'Breathtaking Exotic Sanur Residence',
           image:'property6.jpg',
           location:'Canggu, Mengwi, Tumbak',
@@ -302,47 +302,47 @@ export default {
         type: ['restaurant'],
       }, this.callbackRestaurant);
       // search nearby atm from current cursor
-      map.nearbySearch({
-        location: current_cursor, //Add initial lat/lon here
-        rankBy: this.google.maps.places.RankBy.DISTANCE,
-        type: ['atm'],
-      }, this.callbackAtm);
-      // search nearby cafe from current cursor
-      map.nearbySearch({
-        location: current_cursor, //Add initial lat/lon here
-        rankBy: this.google.maps.places.RankBy.DISTANCE,
-        type: ['cafe'],
-      }, this.callbackCafe);
-      // search nearby pharmacy from current cursor
-      map.nearbySearch({
-        location: current_cursor, //Add initial lat/lon here
-        rankBy: this.google.maps.places.RankBy.DISTANCE,
-        type: ['pharmacy'],
-      }, this.callbackPharmacy);
-      // search nearby convenience_store from current cursor
-      map.nearbySearch({
-        location: current_cursor, //Add initial lat/lon here
-        rankBy: this.google.maps.places.RankBy.DISTANCE,
-        type: ['convenience_store'],
-      }, this.callbackConvenienceStore);
+      // map.nearbySearch({
+      //   location: current_cursor, //Add initial lat/lon here
+      //   rankBy: this.google.maps.places.RankBy.DISTANCE,
+      //   type: ['atm'],
+      // }, this.callbackAtm);
+      // // search nearby cafe from current cursor
+      // map.nearbySearch({
+      //   location: current_cursor, //Add initial lat/lon here
+      //   rankBy: this.google.maps.places.RankBy.DISTANCE,
+      //   type: ['cafe'],
+      // }, this.callbackCafe);
+      // // search nearby pharmacy from current cursor
+      // map.nearbySearch({
+      //   location: current_cursor, //Add initial lat/lon here
+      //   rankBy: this.google.maps.places.RankBy.DISTANCE,
+      //   type: ['pharmacy'],
+      // }, this.callbackPharmacy);
+      // // search nearby convenience_store from current cursor
+      // map.nearbySearch({
+      //   location: current_cursor, //Add initial lat/lon here
+      //   rankBy: this.google.maps.places.RankBy.DISTANCE,
+      //   type: ['convenience_store'],
+      // }, this.callbackConvenienceStore);
 
 
       let restaurant = new this.google.maps.LatLng(this.current_distance.restaurant.lat,
         this.current_distance.restaurant.lng)
-      let atm = new this.google.maps.LatLng(this.current_distance.atm.lat,
-        this.current_distance.atm.lng)
-      let cafe = new this.google.maps.LatLng(this.current_distance.cafe.lat,
-        this.current_distance.cafe.lng)
-      let pharmacy = new this.google.maps.LatLng(this.current_distance.pharmacy.lat,
-        this.current_distance.pharmacy.lng)
-      let convenience_store = new this.google.maps.LatLng(this.current_distance.convenience_store.lat,
-        this.current_distance.convenience_store.lng)
+      // let atm = new this.google.maps.LatLng(this.current_distance.atm.lat,
+      //   this.current_distance.atm.lng)
+      // let cafe = new this.google.maps.LatLng(this.current_distance.cafe.lat,
+      //   this.current_distance.cafe.lng)
+      // let pharmacy = new this.google.maps.LatLng(this.current_distance.pharmacy.lat,
+      //   this.current_distance.pharmacy.lng)
+      // let convenience_store = new this.google.maps.LatLng(this.current_distance.convenience_store.lat,
+      //   this.current_distance.convenience_store.lng)
 
       this.distance_from.restaurant = (this.getDistance(current_cursor,restaurant) / 1000).toFixed(2)
-      this.distance_from.atm = (this.getDistance(current_cursor,atm) / 1000).toFixed(2)
-      this.distance_from.cafe = (this.getDistance(current_cursor,cafe) / 1000).toFixed(2)
-      this.distance_from.pharmacy = (this.getDistance(current_cursor,pharmacy) / 1000).toFixed(2)
-      this.distance_from.convenience_store = (this.getDistance(current_cursor,convenience_store) / 1000).toFixed(2)
+      // this.distance_from.atm = (this.getDistance(current_cursor,atm) / 1000).toFixed(2)
+      // this.distance_from.cafe = (this.getDistance(current_cursor,cafe) / 1000).toFixed(2)
+      // this.distance_from.pharmacy = (this.getDistance(current_cursor,pharmacy) / 1000).toFixed(2)
+      // this.distance_from.convenience_store = (this.getDistance(current_cursor,convenience_store) / 1000).toFixed(2)
 
     },
     updateZoom(e){
